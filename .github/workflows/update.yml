@@ -49,6 +49,7 @@ jobs:
         run: |
           remotes::install_deps(dependencies = TRUE)
           remotes::install_cran("rcmdcheck")
+          remotes::install_cran("here")
         shell: Rscript {0}
 
       - name: Download data
