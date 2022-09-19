@@ -1,0 +1,65 @@
+on:
+  schedule:
+    - cron:  '0 0 1 * *'
+  workflow_dispatch:
+
+name: update
+
+jobs:
+  update:
+    runs-on: ubuntu-latest
+    env:
+      GITHUB_PAT: ${{ secrets.GITHUB_TOKEN }}
+    steps:
+      - name: Get current date
+        id: date
+        run: echo "::set-output name=date::$(date +'%Y-%m-%d %H:%M')"
+
+      - uses: actions/checkout@v2
+
+      - uses: r-lib/actions/setup-r@v1
+
+      # - name: Install Ubuntu dependencies
+      #   run: |
+      #     sudo apt-get install libcurl4-openssl-dev
+
+      - name: Query dependencies
+        run: |
+          install.packages('remotes')
+          saveRDS(remotes::dev_package_deps(dependencies = TRUE), ".github/depends.Rds", version = 2)
+          writeLines(sprintf("R-%i.%i", getRversion()$major, getRversion()$minor), ".github/R-version")
+        shell: Rscript {0}
+
+      - name: Restore R package cache
+        uses: actions/cache@v2
+        with:
+          path: ${{ env.R_LIBS_USER }}
+          key: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-${{ hashFiles('.github/depends.Rds') }}
+          restore-keys: ${{ runner.os }}-${{ hashFiles('.github/R-version') }}-1-
+
+      - name: Install system dependencies
+        if: runner.os == 'Linux'
+        run: |
+          while read -r cmd
+          do
+            eval sudo $cmd
+          done < <(Rscript -e 'writeLines(remotes::system_requirements("ubuntu", "20.04"))')
+
+      - name: Install dependencies
+        run: |
+          remotes::install_deps(dependencies = TRUE)
+          remotes::install_cran("rcmdcheck")
+        shell: Rscript {0}
+
+      - name: Download data
+        run: |
+          source(here::here("script/download_data.R"))
+        shell: Rscript {0}
+
+      # https://github.com/stefanzweifel/git-auto-commit-action
+      #
+      - uses: stefanzweifel/git-auto-commit-action@v4
+        with:
+            commit_message: "data: Update data [${{ steps.date.outputs.date }}]"
+            branch: master
+            # file_pattern: inst/extdata/*.csv data/*.rda
