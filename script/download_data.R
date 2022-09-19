@@ -4,7 +4,7 @@
 library(tidyverse)
 library(httr)
 library(magrittr)
-library(here)
+# library(here)
 
 #---------------------------------------------------------------------------------------------------------------------
 #' Diretório
@@ -42,26 +42,25 @@ l_name_file_ipca <-
 map2(
       head(l_url_ipca)
     , head(l_name_file_ipca)
-    , ~download.file(.x, destfile =  here(DATA_ZIP, .y))
+    , ~download.file(.x, destfile =  here::here(DATA_ZIP, .y))
     ) 
 
 #* Unzip
 map(
-    list.files(here(DATA_ZIP), full.names = TRUE)
-    , ~unzip(.x, exdir = here(DATA_DIR))
+    list.files(here::here(DATA_ZIP), full.names = TRUE)
+    , ~unzip(.x, exdir = here::here(DATA_DIR))
     )
 
 #!Remove ZIP
-unlink(here(DATA_ZIP), recursive = TRUE)
+unlink(here::here(DATA_ZIP), recursive = TRUE)
 
 #---------------------------------------------------------------------------------------------------------------------
 #' CHeck
 
 # output_path  <- 'data/processed/unzip/' 
 # all_raw_files <- list.files('data/raw', full.names = TRUE)
-
 # map(all_raw_files, ~unzip(.x, exdir = output_path))
 
-# # #* Check
-# # all_unzip_files <- list.files('data/processed/unzip', full.names = TRUE)
-# # length(all_raw_files) == length(all_unzip_files)
+# #* Check
+# all_unzip_files <- list.files('data/processed/unzip', full.names = TRUE)
+# length(all_raw_files) == length(all_unzip_files)
