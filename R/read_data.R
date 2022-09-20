@@ -4,7 +4,12 @@
 #' @import stringr
 NULL
 
-all_files <- list.files(here::here('inst/extdata'), full.names = TRUE) 
+EXTDATA_DIR <- system.file("extdata", package = "ipca")
+all_files <- list.files(EXTDATA_DIR)
+
+# Sys.glob(EXTDATA_DIR)
+
+# all_files <- list.files(here::here('inst/extdata'), full.names = TRUE) 
 
 #---------------------------------------------------------------------------------------------------------------------
 #* Primeira Tentativa
