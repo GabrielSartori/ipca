@@ -5,11 +5,16 @@
 NULL
 
 EXTDATA_DIR <- system.file("extdata", package = "ipca")
-all_files <- list.files(EXTDATA_DIR)
+all_files <- list.files(EXTDATA_DIR, full.names = TRUE) 
+
+# all_files <- file.path(EXTDATA_DIR, full.names = TRUE)
+
+# all_files <- file.path(EXTDATA_DIR)
+
+# PATHS <- file.path(EXTDATA_DIR, paste0("*_", region, "_Region_Mobility_Report.csv"))
 
 # Sys.glob(EXTDATA_DIR)
 
-# all_files <- list.files(here::here('inst/extdata'), full.names = TRUE) 
 
 #---------------------------------------------------------------------------------------------------------------------
 #* Primeira Tentativa
