@@ -15,7 +15,17 @@ BugReports: https://github.com/GabrielSartori/ipca/issues
 IDepends: 
     R (>= 3.5)
 Imports:
-    tidyverse,
+    dplyr,
     here,
     httr,
-    magrittr
+    magrittr,
+    lubridate,
+    readxl,
+    tidyr,
+    stringr,
+    purrr,
+    plyr,
+    zoo,
+    janitor,
+    xfun,
+    memoise
